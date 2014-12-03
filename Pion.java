@@ -3,6 +3,8 @@
  */
 package stratego;
 
+import javax.swing.Icon;
+
 /**
  * @author Marie
  * @date 11/11/14
@@ -10,24 +12,21 @@ package stratego;
 public class Pion {
 
 	private int x;
-	private char y;
+	private int y;
 	private int grade;
-	private char gradeC;
-	
+	private Icon i;
+
+
 	/**
 	 * Constructeur d'un pion de base.
 	 */
-	public Pion(int x, char y, int grade) {
+	public Pion(int x, int y, int grade, Icon i) {
 		this.x = x;
 		this.y = y;
 		this.grade = grade;
+		this.i = i;
 	}
 	
-	public Pion(int x, char y, char gradeC) {
-		this.x = x;
-		this.y = y;
-		this.gradeC = gradeC;
-	}
 	
 	public int getX() {
 		return x;
@@ -37,12 +36,21 @@ public class Pion {
 		this.x = x;
 	}
 	
-	public char getY() {
+	public int getY() {
 		return y;
 	}
 
-	public void setY(char y) {
+	public void setY(int y) {
 		this.y = y;
+	}
+
+	public Icon getI() {
+		return i;
+	}
+
+
+	public void setI(Icon i) {
+		this.i = i;
 	}
 
 	public int getGrade() {
@@ -53,13 +61,7 @@ public class Pion {
 		this.grade = grade;
 	}
 	
-	public int getGradeC() {
-		return gradeC;
-	}
-
-	public void setGradeC(char gradeC) {
-		this.gradeC = gradeC;
-	}
+	
 
 	/**
 	 * @param X valide requis.
@@ -74,35 +76,8 @@ public class Pion {
 	 * @param Y valide requis.
 	 * @return Nouveau Y une fois le pion déplacé.
 	 */
-	public int bougerPionLaterale(char y){
+	public int bougerPionLaterale(int y){
 		this.y = y;
 		return this.y;
-	}
-	
-	/**
-	 * @param grade entre 1 et 10.
-	 * @return True si l'adversaire est plus fort False s'il est plus faible.
-	 */
-	public boolean estPlusFort(int grade1, int grade2){
-		if(grade1 > grade2){
-			return true;
-		}
-		else{
-			return false;
-		}
-	}
-	
-	public boolean ischar (Pion p){
-		if (p.getGrade() > 10){
-			return true;
-		}
-		return false;
-	}
-	
-	public boolean isDrapeau (Pion p){
-		if (p.getGrade() == 11){
-			return true;
-		}
-		return false;
 	}
 }

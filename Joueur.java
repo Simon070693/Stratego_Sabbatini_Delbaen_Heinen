@@ -11,7 +11,7 @@ import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.io.PrintStream;
 import java.net.Socket;
-import java.util.Observable;
+
 
 public  class Joueur  implements Runnable {
 	
@@ -21,6 +21,7 @@ public  class Joueur  implements Runnable {
 	private char color;
 	private BufferedReader in;
 	private PrintStream out;
+	public Pion[] tableauPion;
 
 	public Joueur() {}
 
@@ -41,14 +42,6 @@ public  class Joueur  implements Runnable {
 		this.color = couleur;
 	}
 	
-	public static boolean partieGagne(Pion d){
-		if(d.isDrapeau(d)==true){
-			return true;
-		}
-		else{
-			return false;
-		}
-	}
 	
 	public boolean capitule(){
 		return false;
