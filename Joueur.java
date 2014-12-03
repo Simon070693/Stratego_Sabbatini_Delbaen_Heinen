@@ -13,16 +13,14 @@ import java.io.PrintStream;
 import java.net.Socket;
 import java.util.Observable;
 
-public  class Joueur extends Observable  implements Runnable {
-	protected int numero;
-	protected int nbPoints;
-	protected BufferedReader in;
-	protected PrintStream out;
-	protected Joueur adversaire;
-	protected boolean jouer;
-	protected boolean jeuFini;
-	protected boolean partieGagnee;
-	protected boolean partiePerdue;
+public  class Joueur  implements Runnable {
+	
+	private Joueur adversaire;
+	private boolean estPret;
+	private boolean partieGagnee;
+	private char color;
+	private BufferedReader in;
+	private PrintStream out;
 
 	public Joueur() {}
 
@@ -38,13 +36,13 @@ public  class Joueur extends Observable  implements Runnable {
 		adversaire = new Joueur();
 	}
 
-	public Joueur(Socket socket, int numero) {
+	public Joueur(Socket socket, char couleur) {
 		this(socket);
-		this.numero = numero;
+		this.color = couleur;
 	}
 	
-	public static boolean partieGagne(Drapeau d){
-		if(d.estAttrape()==true){
+	public static boolean partieGagne(Pion d){
+		if(d.isDrapeau(d)==true){
 			return true;
 		}
 		else{
@@ -61,7 +59,7 @@ public  class Joueur extends Observable  implements Runnable {
 		int j;
 		for(i=0; i<40; i++){
 			j = tabP[i].getGrade(); 
-			if(j == (int)j){
+			if(j < 11){
 				return true;
 			}
 		}
@@ -70,4 +68,6 @@ public  class Joueur extends Observable  implements Runnable {
 
 	public void run() {}
 }
+
+
 

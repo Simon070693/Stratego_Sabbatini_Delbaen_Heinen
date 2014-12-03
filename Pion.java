@@ -91,5 +91,18 @@ public class Pion {
 			return false;
 		}
 	}
-
+	
+	public boolean ischar (Pion p){
+		if (p.getGrade() > 10){
+			return true;
+		}
+		return false;
+	}
+	
+	public boolean isDrapeau (Pion p){
+		if (p.getGrade() == 11){
+			return true;
+		}
+		return false;
+	}
 }

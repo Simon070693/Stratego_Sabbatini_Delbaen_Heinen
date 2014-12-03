@@ -9,7 +9,6 @@ public class TestPion {
 	@Test
 	public void test() {
 		Pion p1 = new Pion (1,'A',3);
-		Lieutenant l = new Lieutenant (1,'A',3);
 		Pion p2 = new Pion (5,'D',6);
 		Pion p3 = new Pion (4,'E',10);
 		Espion e = new Espion (6,'E',1);
