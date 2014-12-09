@@ -1,112 +1,203 @@
 package stratego;
 
 import javax.swing.*;
-import  java.awt.event.*;
+
 import java.awt.GridLayout;
 
 
 public class GrilleStratego extends JPanel {
 	
+	private static final long serialVersionUID = 2L;
 	Case[] tabBouton = new Case[100];
-	JButton[] tabBout = new JButton[40];
-	Joueur j1;
-	int [] nbPions= new int [12];
+	Pion[] tableauPion;
+	Joueur joueur;
+	
 	
 
 	/**
 	 * Create the panel.
 	 */
-	public GrilleStratego() {
-		nbPions[0]=5;
-		nbPions[1]=1;
-		nbPions[2]=1;
-		nbPions[3]=2;
-		nbPions[4]=3;
-		nbPions[5]=4;
-		nbPions[6]=4;
-		nbPions[7]=4;
-		nbPions[8]=5;
-		nbPions[9]=8;
-		nbPions[10]=1;
-		nbPions[11]=1;
+	public GrilleStratego(Joueur joueur, Pion[] tableauPion) {
+		this.joueur = joueur;
+		this.tableauPion = tableauPion;
 		
 		
-		setLayout(new GridLayout(14, 10, 0, 0));
+		setLayout(new GridLayout(10, 10, 0, 0));
 		int  numBouton = 0;
     	for(int i=0; i<10; i++){
 			for(int j=0; j<10; j++){        		
 				tabBouton[numBouton] = new Case(j,i);
-				ImageIcon fond = new ImageIcon ("image/images/StrategoBackground_"+i+j+".gif");
-				tabBouton[numBouton].setIcon(fond);
+				for(int k=0; k<40; k++){
+					if(tableauPion[k].getX()==j && tableauPion[k].getY()== i){
+						ImageIcon fond = (ImageIcon) tableauPion[k].getI();
+						tabBouton[numBouton].setIcon(fond);
+					}
+					else{
+						ImageIcon fond = new ImageIcon ("image/images/StrategoBackground_"+i+j+".gif");
+						tabBouton[numBouton].setIcon(fond);
+					}
+				}
 				add(tabBouton[numBouton]);
 	        	numBouton = numBouton +1;
 	     
 			}
-		}
-    	int numBout = 0;
-    	for(int i=0; i<10; i++){ 
-    		for(int j=0; j<4; j++){ 
-    			tabBout[numBout] = new JButton();
-    			//if (j1.color == 'B'){
-    				int k=0;
-    				int compteur= nbPions[k];
-    				while (compteur>0){
-    					ImageIcon fond = new ImageIcon ("image/images/PionsBleus/"+k+".gif");
-    					tabBout[numBout].setIcon(fond);
-    					add(tabBout[numBout]);
-    	    			numBout = numBout +1; 
-    					compteur--; 
-    					}
-    				k++; 
-    				} 
-    			/*else{
-    				int k=0;
-    				int compteur= nbPions[k];
-    				while (compteur>0){
-    					ImageIcon fond = new ImageIcon ("image/images/PionsBleus/"+k+".gif");
-    					tabBout[numBout].setIcon(fond);
-    					add(tabBout[numBout]);
-    	    			numBout = numBout +1;
-    					compteur--; 
-    					}
-    				k++; 
-    				} 
-    			
-    			
-    			}*/
-    		}
+
     	}
+   }
     			
 	
 	
 	public void MouseClicked(java.awt.event.MouseEvent evt) {                                 
 		
 		int temp = -1;
-		int b;
 		int x = evt.getX();
 		int y = evt.getY();
 		Case bouton = new Case(x,y);
 		Icon fond = new ImageIcon ();
 		
 		for(int i = 0; i<100; i++){
-			if(bouton.getIcon() == tabBouton[i].getIcon()){
-				j1.tableauPion[temp].setX(x);
-				j1.tableauPion[temp].setY(y);
-				j1.tableauPion[temp].setI(fond);
-    			temp = -1; // "vide" la variable temporaire
+			if(bouton.getIcon() == tabBouton[i].getIcon() && temp!= -1){
+				if(estDeplacementPossible(x, y) == true && deplacementPion(joueur.tableauPion[temp], x, y) == true){
+					joueur.tableauPion[temp].setX(x);
+					joueur.tableauPion[temp].setY(y);
+					tabBouton[i].setIcon(joueur.tableauPion[temp].getI());
+	    			temp = -1; // "vide" la variable temporaire
+				}
+				else{
+					System.out.println("Placer le pion à un endroit autorisé!");
+				}
 			}
 			else{
 				for(int j = 0; j<40; j++){
-					if(x == j1.tableauPion[j].getX() && y == j1.tableauPion[j].getY()){
-						temp = j;
-						fond = j1.tableauPion[j].getI();
+					if(x == joueur.tableauPion[j].getX() && y == joueur.tableauPion[j].getY()){
+						if(deplacementPion(joueur.tableauPion[temp], x, y) == true){
+							temp = j;
+							fond = bouton.getIcon();
+							tabBouton[i].setIcon(fond);
+						}
+						else{
+							System.out.println("Placer le pion à un endroit autorisé!");
+						}
 					}
 					else{
+						if(temp == -1){
 						System.out.println("Choisissez d'abord le pion a deplacer!");
+						}
+						else{
+							if(deplacementPion(joueur.tableauPion[temp], x, y) == true){
+							if(combat(temp, x, y)==0){
+								temp = -1;
+								fond = new ImageIcon ("image/images/StrategoBackground_"+y+x+".gif");
+								tabBouton[i].setIcon(fond);
+							}
+							if(combat(temp, x, y)==1){
+								joueur.tableauPion[temp].setX(x);
+								joueur.tableauPion[temp].setY(y);
+								tabBouton[i].setIcon(joueur.tableauPion[temp].getI());
+				    			temp = -1; // "vide" la variable temporaire
+							}
+							if(combat(temp, x, y)==2){
+				    			temp = -1; // "vide" la variable temporaire
+							}
+							if(combat(temp, x, y)==-1){
+								System.out.println("ERREUR");
+							}
+							}
+							else{
+								System.out.println("Placer le pion à un endroit autorisé!");
+							}
+						}
 					}
 				}
 				
 			}
 		}
+	}
+	
+	
+	
+	/**
+	 * Empeche le pion d'aller dans les 8 cases non valides
+	 * @param p1 != null
+	 * @return false s'il s'agit d'une case non valides si non true;
+	 */
+	public boolean estDeplacementPossible(int x, int y){
+		if(x == 3 && y == 5){
+			return false;
+		}
+		if(x == 4 && y == 5){
+			return false;
+		}
+		if(x == 3 && y == 6){
+			return false;
+		}
+		if(x == 4 && y == 6){
+			return false;
+		}
+		if(x == 7 && y == 5){
+			return false;
+		}
+		if(x == 8 && y == 5){
+			return false;
+		}
+		if(x == 7 && y == 6){
+			return false;
+		}
+		if(x == 8 && y == 6){
+			return false;
+		}
+		else{
+			return true;
+		}
+	}
+	
+	/**
+	 * Empeche le pion de se deplacer de plus d'une case sauf s'il s'agit de l'écraireur.
+	 * @param p1 non null
+	 * @param x = x de la case ou on veut positionner le pion.
+	 * @param y = y de la case ou on veut positionner le pion.
+	 * @return true si le deplacement est valide si non false.
+	 */
+	public boolean deplacementPion(Pion p1, int x, int y){
+		if((p1.getX() > x+1) && p1.getGrade()!=2){
+			return false;
+		}
+		if((p1.getX() < x-1) && p1.getGrade()!=2){
+			return false;
+		}
+		if((p1.getY() > y+1) && p1.getGrade()!=2){
+			return false;
+		}
+		if((p1.getY() < y-1) && p1.getGrade()!=2){
+			return false;
+		}
+		else{
+			return true;
+		}
+		
+	}
+	
+	/**
+	 * Trouve lequel des deux pions est le plus fort.
+	 * @return 1 si le joueur est le plus fort, 2 si c'est l'adversaire et 0 s'ils sont égaux.
+	 */
+	public int combat(int temp, int x, int y){
+		for(int i = 0; i<40; i++){
+			if((joueur.adversaire.tableauPion[i].getY() == y) && (joueur.adversaire.tableauPion[i].getX() == x)){
+				if((joueur.adversaire.tableauPion[i].getGrade()> joueur.tableauPion[temp].getGrade())){
+					System.out.println("Il est plus fort que vous...Son grade ="+joueur.adversaire.tableauPion[i].getGrade());
+					return 2;
+				}
+				if((joueur.adversaire.tableauPion[i].getGrade()< joueur.tableauPion[temp].getGrade())){
+					System.out.println("Vous etes plus fort!");
+					return 1;
+				}
+				else{
+					System.out.println("Egalite! Les deux s'entre-tuent...");
+					return 0;
+				}
+			}
+		}
+		return -1;
 	}
 }
