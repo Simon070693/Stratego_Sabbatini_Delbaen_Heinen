@@ -1,34 +1,38 @@
+/**
+ * Classe qui permet de créer la grille du jeu.
+ */
 package stratego;
 
 import javax.swing.*;
 
 import java.awt.GridLayout;
 
+/**
+ * @author Marie,Lionel,Simon
+ * @date 12/12/14
+ */
 
 public class GrilleStratego extends JPanel {
 	
-	private static final long serialVersionUID = 2L;
-	Case[] tabBouton = new Case[100];
-	Pion[] tableauPion;
+	Case[] tabBouton = new Case[100];			//permet de créer la grille de jeu
+	Pion[] tableauPion = new Pion[40];			//tableau contenant les pions du joueur avec leur coordonnées choisies
 	Joueur joueur;
 	
 	
 
 	/**
-	 * Create the panel.
+	 * Constructeur de la classe
 	 */
-	public GrilleStratego(Joueur joueur, Pion[] tableauPion) {
+	public GrilleStratego(Joueur joueur) {
 		this.joueur = joueur;
-		this.tableauPion = tableauPion;
-		
-		
+		this.tableauPion = joueur.tableauPion;
 		setLayout(new GridLayout(10, 10, 0, 0));
 		int  numBouton = 0;
     	for(int i=0; i<10; i++){
 			for(int j=0; j<10; j++){        		
 				tabBouton[numBouton] = new Case(j,i);
 				for(int k=0; k<40; k++){
-					if(tableauPion[k].getX()==j && tableauPion[k].getY()== i){
+					if(tableauPion[k].getX()==j && tableauPion[k].getY()== i){				//place les pions dans la grille si non, mets l'image de fond
 						ImageIcon fond = (ImageIcon) tableauPion[k].getI();
 						tabBouton[numBouton].setIcon(fond);
 					}
@@ -39,72 +43,65 @@ public class GrilleStratego extends JPanel {
 				}
 				add(tabBouton[numBouton]);
 	        	numBouton = numBouton +1;
-	     
 			}
-
     	}
    }
-    			
-	
-	
+    /**
+	 * Méthode permettant de gérer les click du joueur.
+	 */
 	public void MouseClicked(java.awt.event.MouseEvent evt) {                                 
-		
-		int temp = -1;
-		int x = evt.getX();
-		int y = evt.getY();
+		int temp = -1;					//variable tampon pouvant occupé l'indice du pion sélectionné. -1 = "vide"
+		int x = evt.getX();				//mets dans la variable x l'abscisse de la case sur laquelle le joueur a clicker
+		int y = evt.getY();				//mets dans la variable y l'ordonnée  de la case sur laquelle le joueur a clicker
 		Case bouton = new Case(x,y);
 		Icon fond = new ImageIcon ();
 		
 		for(int i = 0; i<100; i++){
-			if(bouton.getIcon() == tabBouton[i].getIcon() && temp!= -1){
-				if(estDeplacementPossible(x, y) == true && deplacementPion(joueur.tableauPion[temp], x, y) == true){
-					joueur.tableauPion[temp].setX(x);
-					joueur.tableauPion[temp].setY(y);
-					tabBouton[i].setIcon(joueur.tableauPion[temp].getI());
-	    			temp = -1; // "vide" la variable temporaire
+			if(bouton.getIcon() == tabBouton[i].getIcon() && temp!= -1){	//cas ou un pion a déjà été sélectionné et que le joueur souhaite le placer sur une case valide non occupée
+				if(estDeplacementPossible(x, y) == true && deplacementPion(joueur.tableauPion[temp], x, y) == true){ //si le déplacement est possible
+					joueur.tableauPion[temp].setX(x);						//modifie la position du pion
+					joueur.tableauPion[temp].setY(y);						//modifie la position du pion
+					tabBouton[i].setIcon(joueur.tableauPion[temp].getI());	//change l'icon de fond par celle du pion
+	    			temp = -1;												// "vide" la variable temporaire
 				}
 				else{
-					System.out.println("Placer le pion à un endroit autorisé!");
+					System.out.println("Placer le pion à un endroit autorisé!"); //si le déplacement n'est pas possible
 				}
 			}
 			else{
-				for(int j = 0; j<40; j++){
-					if(x == joueur.tableauPion[j].getX() && y == joueur.tableauPion[j].getY()){
-						if(deplacementPion(joueur.tableauPion[temp], x, y) == true){
-							temp = j;
-							fond = bouton.getIcon();
-							tabBouton[i].setIcon(fond);
-						}
-						else{
-							System.out.println("Placer le pion à un endroit autorisé!");
-						}
+				for(int j = 0; j<40; j++){		//cas ou la variable temporelle est nulle
+					if(x == joueur.tableauPion[j].getX() && y == joueur.tableauPion[j].getY()){	// si on a clicker sur une case pion
+						temp = j;						//on met son indice dans la variable tampon
+						fond = bouton.getIcon();		//on place l'image de fond a la place du pion
+						tabBouton[i].setIcon(fond);
+						
 					}
-					else{
-						if(temp == -1){
+					else{ // si on a pas clicker sur une case pion
+						if(temp == -1){ //si la variable temporelle est vide
 						System.out.println("Choisissez d'abord le pion a deplacer!");
 						}
-						else{
-							if(deplacementPion(joueur.tableauPion[temp], x, y) == true){
-							if(combat(temp, x, y)==0){
-								temp = -1;
-								fond = new ImageIcon ("image/images/StrategoBackground_"+y+x+".gif");
+						else{ // si la variable temporelle est pleine
+							if(deplacementPion(joueur.tableauPion[temp], x, y) == true){ // si le déplacement est possible
+							if(combat(temp, x, y)==0){  //s'il s'agit d'un combat => match nul
+								temp = -1;				//on vide la variable tempon
+								fond = new ImageIcon ("image/images/StrategoBackground_"+y+x+".gif"); //on place l'image de fond a la place du pion de l'adversaire
 								tabBouton[i].setIcon(fond);
 							}
-							if(combat(temp, x, y)==1){
-								joueur.tableauPion[temp].setX(x);
+							if(combat(temp, x, y)==1){	//si le joueur gagne
+								joueur.tableauPion[temp].setX(x);	//son pion prend les coordonnées de l'adversaire
 								joueur.tableauPion[temp].setY(y);
-								tabBouton[i].setIcon(joueur.tableauPion[temp].getI());
-				    			temp = -1; // "vide" la variable temporaire
+								tabBouton[i].setIcon(joueur.tableauPion[temp].getI());	//on mets l'image du pion du joueur à la place de celui de l'adversaire
+				    			temp = -1; // on "vide" la variable temporaire
 							}
-							if(combat(temp, x, y)==2){
-				    			temp = -1; // "vide" la variable temporaire
+							if(combat(temp, x, y)==2){	//si l'adversaire gagne
+				    			temp = -1; // on "vide" la variable temporaire
 							}
-							if(combat(temp, x, y)==-1){
+							if(combat(temp, x, y)==-1){	//si erreur
 								System.out.println("ERREUR");
 							}
 							}
 							else{
-								System.out.println("Placer le pion à un endroit autorisé!");
+								System.out.println("Placer le pion à un endroit autorisé!"); // dernier cas
 							}
 						}
 					}
@@ -113,13 +110,10 @@ public class GrilleStratego extends JPanel {
 			}
 		}
 	}
-	
-	
-	
 	/**
 	 * Empeche le pion d'aller dans les 8 cases non valides
-	 * @param p1 != null
-	 * @return false s'il s'agit d'une case non valides si non true;
+	 * @param x <=0 et x>=10 et y <=0 et y>=10
+	 * @return false s'il s'agit d'une case non valides si non true
 	 */
 	public boolean estDeplacementPossible(int x, int y){
 		if(x == 3 && y == 5){
@@ -150,7 +144,6 @@ public class GrilleStratego extends JPanel {
 			return true;
 		}
 	}
-	
 	/**
 	 * Empeche le pion de se deplacer de plus d'une case sauf s'il s'agit de l'écraireur.
 	 * @param p1 non null
@@ -176,7 +169,6 @@ public class GrilleStratego extends JPanel {
 		}
 		
 	}
-	
 	/**
 	 * Trouve lequel des deux pions est le plus fort.
 	 * @return 1 si le joueur est le plus fort, 2 si c'est l'adversaire et 0 s'ils sont égaux.

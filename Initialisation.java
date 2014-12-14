@@ -1,89 +1,57 @@
+/**
+ * Classe Initialisation, initialise la postion des pions à placer.
+ */
+
 package stratego;
 
 import javax.swing.JPanel;
-
 import java.awt.GridBagLayout;
-
 import javax.swing.JComboBox;
-
 import java.awt.GridBagConstraints;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-
 import javax.swing.ImageIcon;
 import javax.swing.JTextPane;
 import javax.swing.JTextField;
 import javax.swing.JButton;
 
+/**
+ * @author Marie,Lionel,Simon
+ * @date 12/12/14
+ */
+
 public class Initialisation extends JPanel {
 
 	
-	private static final long serialVersionUID = 4L;
-	private int ok = 0;
-
-	public IniPion [] nbPions;
-	public Pion[] tableauPion;
-	Joueur joueur;
-	private JTextField txtInitialisationDeLa;
-	private JTextField txtOuVoulezVous;
-	JComboBox<?> comboBox;
-	JComboBox<?> comboBox_1;
-	int x;
-	int y;
-	int FINI = 0;
-
+	
+	private int ok = 0;							//variable qui indique lorsqu'on à appuyé sur le bouton ok
+	public String [] nbPions = new String[12];  //tableau contenant les noms des différents pions
+	public int [] nbPion = new int[12];			//tableau contenant le nombres de pions de chaques sortes
+	public Pion[] tableauPion = new Pion[40];	//tableau contenant les pions initialisés du joueur
+	private Joueur joueur;						//le joueur
+	private JTextField txtInit;					//JTextField contenant le titre du panel "Initialisation
+	private JTextField txtOuVoulezVous;			//JTextField donne des indications à l'utilisateur
+	private JComboBox<?> comboBox;				//Première boîte pour choisir où placer le pion
+	private JComboBox<?> comboBox_1;			//Deuxième boîte pour choisir où placer le pion
 	
 	/**
-	 * Create the panel.
+	 * Constructeur du panel Initialisation.
+	 * @param FINI != 1, nbPions != null, nbPion != null
 	 */
-	public Initialisation(Joueur joueur, Pion[] tableauPion, int FINI, IniPion [] nbPions) {
+	public Initialisation(Joueur joueur, String [] nbPions, int [] nbPion) {
 		this.joueur = joueur;
-		this.tableauPion = tableauPion;
-		this.FINI = FINI;
-		this.nbPions = nbPions;
-		
-		/**
-		 * Initialise le tableau avec le pions disponibles et leur nom
-		 */
-		nbPions[0].a="Bombe";
-		nbPions[0].i= 5;
-		nbPions[1].a="Espion";
-		nbPions[1].i= 1;
-		nbPions[2].a="Eclaireur";
-		nbPions[2].i= 8;
-		nbPions[3].a="Demineur";
-		nbPions[3].i= 5;
-		nbPions[4].a="Sergent";
-		nbPions[4].i= 4;
-		nbPions[5].a="Lieutenant";
-		nbPions[5].i= 4;
-		nbPions[6].a="Capitaine";
-		nbPions[6].i= 4;
-		nbPions[7].a="Commendant";
-		nbPions[7].i= 3;
-		nbPions[8].a="Colonnel";
-		nbPions[8].i= 2;
-		nbPions[9].a="General";
-		nbPions[9].i= 1;
-		nbPions[10].a="Marechal";
-		nbPions[10].i= 1;
-		nbPions[11].a="Drapeau";
-		nbPions[11].i= 1;
-		
-		
+		this.tableauPion = joueur.tableauPion;
+		this.nbPions = nbPions;		
 		gridBagLayoutInit ();
 		JTextInit ();
 		TextPaneInit ();
 		boxInit();
-		BoutonOK(this.nbPions);
-		FINI = 1;
-		
+		BoutonOK(nbPions, nbPion, joueur.tableauPion);
 	}
-		
-		/**
-		 * Initialise le gridBagLayout
-		 */
+	/**
+	 * Initialise le gridBagLayout.
+	 */
 	public void gridBagLayoutInit (){
 		GridBagLayout gridBagLayout = new GridBagLayout();
 		gridBagLayout.columnWidths = new int[]{0, 0, 0, 0, 0, 0, 0, 0};
@@ -92,25 +60,22 @@ public class Initialisation extends JPanel {
 		gridBagLayout.rowWeights = new double[]{0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, Double.MIN_VALUE};
 		setLayout(gridBagLayout);
 	}
-		
-		/**
-		 * Titre
-		 */
+	/**
+	 * Titre.
+	 */
 	public void JTextInit (){
-		txtInitialisationDeLa = new JTextField();
-		txtInitialisationDeLa.setText("Initialisation");
-		GridBagConstraints gbc_txtInitialisationDeLa = new GridBagConstraints();
-		gbc_txtInitialisationDeLa.insets = new Insets(0, 0, 5, 5);
-		gbc_txtInitialisationDeLa.gridx = 3;
-		gbc_txtInitialisationDeLa.gridy = 0;
-		add(txtInitialisationDeLa, gbc_txtInitialisationDeLa);
-		txtInitialisationDeLa.setColumns(10);
+		txtInit = new JTextField();
+		txtInit.setText("Initialisation");
+		GridBagConstraints gbc_txtInit = new GridBagConstraints();
+		gbc_txtInit.insets = new Insets(0, 0, 5, 5);
+		gbc_txtInit.gridx = 3;
+		gbc_txtInit.gridy = 0;
+		add(txtInit, gbc_txtInit);
+		txtInit.setColumns(10);
 	}
-		
-		
-		/**
-		 * Texte expliquant ce que l'utilisateur doit faire.
-		 */
+	/**
+	 * Texte expliquant ce que l'utilisateur doit faire.
+	 */
 	public void TextPaneInit (){
 		JTextPane textPane = new JTextPane();
 		GridBagConstraints gbc_textPane = new GridBagConstraints();
@@ -126,11 +91,9 @@ public class Initialisation extends JPanel {
 		gbc_textPane.gridy = 2;
 		add(textPane, gbc_textPane);
 	}
-		
-		
-		/**
-		 * Permet à l'utilisateur de choisir où placer ses pions en début de partie.
-		 */
+	/**
+	 * Permet à l'utilisateur de choisir où placer ses pions en début de partie.
+	 */
 	public void boxInit (){
 		
 		String [] tab = {"1","2","3","4"};
@@ -155,22 +118,29 @@ public class Initialisation extends JPanel {
 		gbc_comboBox.gridy = 6;
 		add(comboBox, gbc_comboBox);
 	}
-	
-	public void BoutonOK(IniPion [] nbPions){
-		
+	/**
+	 * Initialise le bouton ok et place dans le tableau "tableauPion" les choix de l'utilisateur sur la postion de ses pions.
+	 * @param nbPions != null
+	 * @param nbPion != null
+	 */
+	public void BoutonOK(String [] nbPions, int [] nbPion, Pion [] tableauPion){
+		int j = 0;
+		int x;
+		int y;
 		ImageIcon icon = null;
-		JButton btnOk = new JButton("OK");
+		JButton btnOk = new JButton("OK");												//initialise le bouton ok
 		GridBagConstraints gbc_btnOk = new GridBagConstraints();
 		gbc_btnOk.insets = new Insets(0, 0, 0, 5);
 		gbc_btnOk.gridx = 3;
 		gbc_btnOk.gridy = 9;
 		add(btnOk, gbc_btnOk);
-		int k = 0;
+		int k = 40;																		//nombre de boutons dans le tableau
 		for(int i =0; i<12; i++){
-			for(int j = nbPions[i].i; j>0; j-- ){
-				while(ok == 0){
+			j = nbPion[i];															
+			while(j>=1){																//tant qu'il reste la même sorte de pions à placé
+				k--;
 				txtOuVoulezVous = new JTextField();
-				txtOuVoulezVous.setText("ou voulez vous placer :"+nbPions[i].a+" ");
+				txtOuVoulezVous.setText("ou voulez vous placer :"+nbPions[i]+" ");
 				GridBagConstraints gbc_txtOuVoulezVous = new GridBagConstraints();
 				gbc_txtOuVoulezVous.insets = new Insets(0, 0, 5, 5);
 				gbc_txtOuVoulezVous.fill = GridBagConstraints.HORIZONTAL;
@@ -182,36 +152,38 @@ public class Initialisation extends JPanel {
 				/*
 				 * dans le tableau de pion on initialise les positions choisies par l'utilisateur.
 				 */
-				x = ((int)comboBox.getSelectedItem());
-				tableauPion[k].setX(x);
-				y = ((int)comboBox_1.getSelectedItem());
-				tableauPion[k].setY(y);
+				x = Integer.valueOf((String)comboBox.getSelectedItem());
+		
+				y =Integer.valueOf((String)comboBox_1.getSelectedItem());
+				
 				
 				/*
 				 * on initialise le grade et l'icon
 				 */
-				tableauPion[k].setGrade(i);
 				if(joueur.color == 'b' ){
 					icon = new ImageIcon ("image/images/PionsBleus"+i+".gif");
 				}
-				if(joueur.color == 'r' ){
+				else{
 					icon = new ImageIcon ("image/images/PionsRouges"+i+".gif");
 					}
-				tableauPion[k].setI(icon);
 				
+				tableauPion[k] = new Pion(x, y, i, icon);
 			
+				btnOk.addActionListener(new ActionListener() {									//permet de savoir quand l'utilisateur à terminé de choisir
+				    public void actionPerformed(ActionEvent arg0) {
+				    	if (btnOk.isEnabled()) {
+				            ok = 1;
+				        }
+				    }
+				});
+				
+				if(ok==1){
+					j--;
+				}				
 			}
-			btnOk.addActionListener(new ActionListener() {
-			    public void actionPerformed(ActionEvent arg0) {
-			    	if (btnOk.isEnabled()) {
-			            ok = 1;
-			        }
-			    }
-			});
-			}
-			ok = 0;
 		}
 	}
+}
 	
 
-}
+
