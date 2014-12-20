@@ -1,9 +1,10 @@
 /**
- * Classe mère des autres pions.
+ * Classe Pions, sert à créer un Pion.
  */
 package stratego;
 
 import javax.swing.Icon;
+import javax.swing.ImageIcon;
 
 /**
  * @author Marie,Lionel,Simon
@@ -14,12 +15,15 @@ public class Pion {
 	private int x;
 	private int y;
 	private int grade;
-	private Icon i;
+	private ImageIcon i;
 	
+	
+
+
 	/**
-	 * Constructeur d'un pion de base.
+	 * Constructeur d'un pion.
 	 */
-	public Pion(int x, int y, int grade, Icon i) {
+	public Pion(int y, int x, int grade, ImageIcon i) {
 		this.x = x;
 		this.y = y;
 		this.grade = grade;
@@ -39,10 +43,10 @@ public class Pion {
 	public void setY(int y) {
 		this.y = y;
 	}
-	public Icon getI() {
+	public ImageIcon getI() {
 		return i;
 	}
-	public void setI(Icon i) {
+	public void setI(ImageIcon i) {
 		this.i = i;
 	}
 	public int getGrade() {
@@ -50,21 +54,5 @@ public class Pion {
 	}
 	public void setGrade(int grade) {
 		this.grade = grade;
-	}
-	/**
-	 * @param X valide requis.
-	 * @return Nouveau X une fois le pion déplacé.
-	 */
-	public int bougerPionVerticale(int x){
-		this.x = x;
-		return this.x;
-	}
-	/**
-	 * @param Y valide requis.
-	 * @return Nouveau Y une fois le pion déplacé.
-	 */
-	public int bougerPionLaterale(int y){
-		this.y = y;
-		return this.y;
 	}
 }

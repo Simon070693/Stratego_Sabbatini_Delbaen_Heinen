@@ -1,75 +1,76 @@
+/**
+ * Permet d'établir connexion TCP entre deux joueurs.
+ */
 package stratego;
 
+import java.awt.event.ActionEvent;
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
+import java.io.InputStreamReader;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.OutputStreamWriter;
+import java.io.PrintWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
 
-/**
- * This class is the server class. It is responsible for communicating with the
- * client to get the moves the remote player wants to make and supply outputs to
- * the remote player
- * 
- * @author Delbaen Lionel
- * 
- */
-public class Serveur {
-	private ServerSocket socket;
-	private Socket client;
-	private OutputStream out;
-	private InputStream in;
+public class Serveur extends Joueur {
 
-	public Serveur(int port) {
-		try {
-			// create a server socket on the specified port
-			socket = new ServerSocket(port);
+	private Principal p;
+	private Socket soc;
+	Pion[] tableauAEmettre;
+	Pion[] tableauRecu;
+	private ObjectOutputStream out;
+	private ObjectInputStream in;
+	
+	/**
+	 * Constructeur qui permet d'envoyer un tableau de pion .
+	 */
+	public Serveur(Principal p) throws IOException, ClassNotFoundException{ // il faut lancer le serveur en même temps que le jeu
+		super();
+		tableauAEmettre= new Pion[40];
 		
-			// wait for incoming connections
-			client = socket.accept();
-
-		} catch (IOException e) {
-			e.printStackTrace();
-		} finally {
-			closeConnections();
-			System.out.println("I hate all clients $#%@!");
+		for(int i = 0 ; i<=40; i++){
+			
+			tableauAEmettre[i]=p.joueur.tableauPion[i];
 		}
+		this.p.joueur=p.joueur;
+		ServerSocket s = new ServerSocket(12345);
+		soc = s.accept();
+		out = new ObjectOutputStream(soc.getOutputStream());
+		out.flush();	 
+        in = new ObjectInputStream(soc.getInputStream()); 
+        out.writeObject(tableauAEmettre);
+        out.flush();       
+        Object objetRecu = in.readObject();
+        tableauRecu = (Pion []) objetRecu;
+	}
+	
+	/**
+	 * Ferme le socket.
+	 * @throws IOException
+	 */
+	public void fermerServeur() throws IOException{
+		soc.close();
+	}
+	
+	/**
+	 * Lis l'objet reçu.
+	 * @throws ClassNotFoundException
+	 * @throws IOException
+	 */
+	public void lireDeplacement() throws ClassNotFoundException, IOException{
+		Object objetRecu = in.readObject();	
+	}
+	
+	/**
+	 * Envoie les coordonnées.
+	 * @param coordonee
+	 * @throws IOException
+	 */
+	public void envoyerDeplacement(int coordonee) throws IOException{
+		out.writeObject(coordonee);
 		
-	}// end constructor
-
-	/**
-	 * This will close all open connections gracefully
-	 */
-	private void closeConnections() {
-		try {
-			out.close();
-			in.close();
-			client.close();
-			socket.close();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-	}// end method
-
-
-	/**
-	 * <code>public InputStream getSocketInputStream()</code>
-	 * Returns the InputStream for reading in messages sent through this half of
-	 * the socket.
-	 * @return An InputStream belonging to the Socket enclosed by this class.
-	 */
-	public InputStream getSocketInputStream() {
-		return in;
 	}
-
-	/**
-	 * <code>public OutputStream getSocketOutputStream()</code>
-	 * Returns the OutputStream for sending messages through this half of the
-	 * socket.
-	 * @return An OutputStream belonging to the Socket enclosed by this class.
-	 */
-	public OutputStream getSocketOutputStream() {
-		return out;
-	}
-
-}// end class
+}

@@ -4,6 +4,9 @@
 package stratego;
 
 import java.awt.EventQueue;
+
+import javax.swing.ImageIcon;
+import javax.swing.JButton;
 import javax.swing.JFrame;
 
 /**
@@ -13,11 +16,12 @@ import javax.swing.JFrame;
 
 public class Principal extends JFrame {
 
-	public static ChoixJoueur panel1;
-	public static Initialisation panel2;
-	public static GrilleStratego panel3;	
-	public static Principal frame;
-	public static Joueur joueur;
+	public ChoixJoueur panel1;
+	public Initialisation panel2;
+	public GrilleStratego panel3;	
+	public Joueur joueur;
+	public char c = 'r';
+	public char c2 = 'b';
 	
 	
 	/**
@@ -25,63 +29,47 @@ public class Principal extends JFrame {
 	 */
 	public Principal(){
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);		
-		setBounds(100, 100, 450, 300);
+		setSize(510,510);
+		setResizable(false);
+		setLocationRelativeTo(null);
+	    setTitle("Projet Stratego");
+	    setIconImage(new ImageIcon("image/images/StrategoIcon.jpg").getImage());
 	}
+	
+	
+	
 	/**
 	 * Méthode main.
 	 */
 	public static void main(String[] args) {
-		String [] nbPions = new String[12];
-		int [] nbPion = new int[12];
-		Pion[] tableauPion = new Pion[40];
-		char c = ' ';
-		joueur = new Joueur(c, tableauPion);
-
-		/*
-		 * Initialise les deux tableau nbPions et nbPion contenant respectivement le nom du pions et le nombre qu'il y en a.
-		 */
-		nbPions[0] = "Bombe";
-		nbPion[0] = 5;
-		nbPions[1] ="Espion";
-		nbPion[1] = 1;
-		nbPions[2] ="Eclaireur";
-		nbPion[2] = 8;
-		nbPions[3] ="Demineur";
-		nbPion[3] = 5;
-		nbPions[4] ="Sergent";
-		nbPion[4] = 4;
-		nbPions[5] ="Lieutenant";
-		nbPion[5] = 4;
-		nbPions[6] ="Capitaine";
-		nbPion[6] = 4;
-		nbPions[7] ="Commendant";
-		nbPion[7] = 3;
-		nbPions[8] ="Colonnel";
-		nbPion[8] = 2;
-		nbPions[9] ="General";
-		nbPion[9] = 1;
-		nbPions[10] ="Marechal";
-		nbPion[10] = 1;
-		nbPions[11] ="Drapeau";
-		nbPion[11] = 1;
 		
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
-					panel1 = new ChoixJoueur(joueur);
-					panel2 = new Initialisation(joueur, nbPions , nbPion);
-					panel3 = new GrilleStratego(joueur);		
-					frame = new Principal();
-					frame.setVisible(true);
-					panel1 = new ChoixJoueur(joueur);
-					frame.getContentPane().add(panel1);
-					panel1.setVisible(true);
-					frame.getContentPane().add(panel2);
-					panel2.setVisible(true);
-					frame.getContentPane().add(panel3);
-					panel3.setVisible(true);
+					Principal p = new Principal();
+					p.joueur = new Joueur();
+					p.setVisible(true);
 					
-				}
+				//	p.panel1 = new ChoixJoueur();
+				//	p.panel2 = new Initialisation(p);
+					p.panel3 = new GrilleStratego(p);		
+					/*
+					p.setContentPane(p.panel1);
+					p.panel1.setVisible(true);
+					
+					JButton couleurRouge = new JButton("Joueur Rouge");
+					p.panel1.add(couleurRouge);
+					couleurRouge.addActionListener(new Click(p,p.c));
+					JButton couleurBleu = new JButton("Joueur Bleu");
+					p.panel1.add(couleurBleu);	
+					couleurBleu.addActionListener(new Click(p,p.c2));
+					*/
+					p.getContentPane().add(p.panel3);
+					p.panel3.setVisible(true);
+					}
+					
+					
+				
 				catch (Exception e) {
 					e.printStackTrace();
 				}
